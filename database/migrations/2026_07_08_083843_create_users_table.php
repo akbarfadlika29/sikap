@@ -10,16 +10,21 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('users', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->string('nip')->unique(); // NIP sebagai pengganti email
-        $table->string('password');
-        $table->enum('role', ['admin','pimpinan', 'pejabat', 'pegawai']); // Penentu arah dashboard
-        $table->rememberToken();
-        $table->timestamps();
-    });
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama');
+            $table->string('nip')->unique();
+            $table->string('no_wa')->nullable();
+            $table->string('password');
+            $table->enum('role', ['superadmin', 'admin', 'kepala_kantor', 'kepala_seksi', 'staff'])->default('staff');
+            $table->boolean('is_active')->default(true);
+            $table->unsignedBigInteger('id_jabatan')->nullable();
+            $table->rememberToken();
+            $table->timestamps();
+
+            $table->foreign('id_jabatan')->references('id')->on('jabatan')->onDelete('set null');
+        });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
