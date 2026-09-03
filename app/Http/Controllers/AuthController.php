@@ -17,38 +17,55 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'nip' => 'required',
-            'password' => 'required'
+            'nip' => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ], [
+            'nip.required' => 'NIP wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
         ]);
 
-        // Jika NIP dan Password cocok di database
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            
-           // LOGIKA PINTAR: Cek role dan arahkan ke dashboard masing-masing
-            $role = Auth::user()->role;
-            
-            if ($role == 'admin') {
-                return redirect('/dashboard-admin'); // Arahkan admin ke sini
-            } elseif ($role == 'pimpinan') {
-                return redirect('/dashboard-pimpinan');
-            } elseif ($role == 'pejabat') {
-                return redirect('/dashboard-pejabat');
-            } elseif ($role == 'pegawai') {
-                return redirect('/dashboard-pegawai');
-            }
+        if (!Auth::attempt($credentials)) {
+            return back()
+                ->withInput($request->only('nip'))
+                ->with('login_error', 'NIP atau password salah.');
         }
 
-        // Jika gagal, kembalikan ke halaman login dengan pesan error
-        return back()->with('error', 'NIP atau Password salah!');
+        $request->session()->regenerate();
+
+        $role = Auth::user()->role;
+
+        return match ($role) {
+             'superadmin' => redirect()->route('permit.index'),
+             'admin' => redirect()->route('permit.index'),
+             'kepala_kantor' => redirect()->route('#'),
+             'kepala_seksi' => redirect()->route('#'),
+             'staff' => redirect()->route('#'),
+
+             default => redirect()->route('#'),
+        };
     }
 
-    // Proses Logout
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/');
+        try {
+            Auth::logout();
+            
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            
+            return redirect()
+                ->route('home')
+                ->with(
+                    'logout_success',
+                    'Anda berhasil keluar dari sistem.'
+                );
+        } catch (\Throwable $th) {
+            return redirect()
+                ->route('home')
+                ->with(
+                    'logout_error',
+                    'Proses keluar dari sistem gagal. Silakan coba lagi.'
+                );
+        }
     }
 }

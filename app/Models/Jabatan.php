@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\PenempatanPegawai;
 
 class Jabatan extends Model
 {
@@ -16,8 +17,8 @@ class Jabatan extends Model
         'nama_jabatan',
     ];
 
-    public function users()
+    public function penempatan()
     {
-        return $this->hasMany(User::class, 'id_jabatan');
+        return $this->hasMany(PenempatanPegawai::class, 'id_jabatan');
     }
 }

@@ -19,11 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['superadmin', 'admin', 'kepala_kantor', 'kepala_seksi', 'staff'])->default('staff');
             $table->boolean('is_active')->default(true);
-            $table->unsignedBigInteger('id_jabatan')->nullable();
             $table->rememberToken();
             $table->timestamps();
-
-            $table->foreign('id_jabatan')->references('id')->on('jabatan')->onDelete('set null');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Jabatan;
 use App\Models\UnitKerja;
 use App\Models\AktivitasLuar;
+use App\Models\PenempatanPegawai;
 
 class User extends Authenticatable
 {
@@ -30,7 +31,6 @@ class User extends Authenticatable
         'password',
         'role',
         'is_active',
-        'id_jabatan',
     ];
 
     /**
@@ -51,23 +51,38 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 
-    public function jabatan()
+    public function penempatan()
     {
-        return $this->belongsTo(Jabatan::class, 'id_jabatan');
+        return $this->hasMany(PenempatanPegawai::class, 'id_user');
     }
 
-    public function unitKerja()
+    public function penempatanDefinitif()
     {
-        return $this->belongsToMany(UnitKerja::class, 'user_unit_kerja', 'id_user', 'id_unit_kerja')->withTimestamps();
+        return $this->hasOne(PenempatanPegawai::class, 'id_user')->where('status_jabatan', 'definitif');
     }
 
     public function aktivitasLuar()
     {
-        return $this->hasMany(User::class, 'id_user');
+        return $this->hasMany(AktivitasLuar::class, 'id_user');
+    }
+
+    public function permitDibuat()
+    {
+        return $this->hasMany(AktivitasLuar::class, 'created_by');
+    }
+
+    public function permitDiproses()
+    {
+        return $this->hasMany(AktivitasLuar::class, 'processed_by');
+    }
+
+    public function latestPermit()
+    {
+        return $this->hasOne(AktivitasLuar::class, 'id_user')->latestOfMany();
     }
 }
