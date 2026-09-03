@@ -14,6 +14,7 @@ class AktivitasLuar extends Model
     protected $table = 'aktivitas_luar';
 
     protected $fillable = [
+        'nomor_permit',
         'id_user',
         'id_jenis_aktivitas_luar',
         'deskripsi_aktivitas_luar',
@@ -25,10 +26,22 @@ class AktivitasLuar extends Model
         'waktu_kembali',
         'posisi_di_kantor',
         'dokumen_pendukung',
-        'status_verifikasi',
+        'status_permit',
+        'alasan_penolakan',
+        'created_by',
+        'processed_by',
+        'processed_at',
     ];
 
-    public function users()
+    protected $casts = [
+        'tanggal_keluar' => 'date',
+        'tanggal_estimasi_kembali' => 'date',
+        'tanggal_kembali' => 'date',
+        'posisi_di_kantor' => 'boolean',
+        'processed_at' => 'datetime',
+    ];
+
+    public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
     }
@@ -36,5 +49,15 @@ class AktivitasLuar extends Model
     public function jenisAktivitasLuar()
     {
         return $this->belongsTo(JenisAktivitasLuar::class, 'id_jenis_aktivitas_luar');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function processor()
+    {
+        return $this->belongsTo(User::class, 'processed_by');
     }
 }

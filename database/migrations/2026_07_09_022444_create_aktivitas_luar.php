@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('aktivitas_luar', function (Blueprint $table) {
             $table->id();
+            $table->string('nomor_permit')->unique();
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_jenis_aktivitas_luar')->nullable();
             $table->text('deskripsi_aktivitas_luar');
@@ -24,11 +25,17 @@ return new class extends Migration
             $table->time('waktu_kembali')->nullable();
             $table->boolean('posisi_di_kantor')->default(0);
             $table->string('dokumen_pendukung')->nullable();
-            $table->enum('status_verifikasi', ['Belum Diverifikasi', 'Sudah Diverifikasi'])->default('Belum Diverifikasi');
+            $table->enum('status_permit', ['draft', 'diajukan', 'disetujui', 'ditolak'])->default('draft');
+            $table->text('alasan_penolakan')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('processed_by')->nullable();
+            $table->timestamp('processed_at')->nullable();
             $table->timestamps();
 
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_jenis_aktivitas_luar')->references('id')->on('jenis_aktivitas_luar')->onDelete('set null');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('processed_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

@@ -16,8 +16,8 @@ class UnitKerja extends Model
         'nama_unit_kerja',
     ];
 
-    public function users()
+    public function penempatan()
     {
-        return $this->belongsToMany(User::class, 'user_unit_kerja', 'id_unit_kerja', 'id_user')->withTimestamps();
+        return $this->hasMany(PenempatanPegawai::class, 'id_unit_kerja');
     }
 }
