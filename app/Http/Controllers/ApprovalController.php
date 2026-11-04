@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AktivitasLuar;
+use Carbon\Carbon;
 
 class ApprovalController extends Controller
 {
@@ -30,7 +31,12 @@ class ApprovalController extends Controller
             'processor',
         ]);
 
-        return view('approval.show', compact('approval'));
+        $waktuKeluar = Carbon::parse($approval->tanggal_keluar)
+            ->setTimeFromTimeString($approval->waktu_keluar);
+
+        $bolehApprove = now()->greaterThanOrEqualTo($waktuKeluar);
+
+        return view('approval.show', compact('approval', 'waktuKeluar', 'bolehApprove'));
     }
 
     public function approve(AktivitasLuar $approval)
@@ -43,6 +49,18 @@ class ApprovalController extends Controller
                     ->with(
                         'approve_error',
                         'Permit hanya dapat disetujui jika berstatus diajukan.'
+                    );
+            }
+
+            $waktuKeluar = Carbon::parse($approval->tanggal_keluar)
+                ->setTimeFromTimeString($approval->waktu_keluar);
+
+            if (now()->lt($waktuKeluar)) {
+                return redirect()
+                    ->route('approval.show', $approval->id)
+                    ->with(
+                        'approve_error',
+                        'Permit belum dapat disetujui. Approval hanya dapat dilakukan mulai tanggal dan waktu keluar yang telah ditentukan.'
                     );
             }
 

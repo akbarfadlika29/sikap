@@ -82,13 +82,13 @@ class PermitController extends Controller
             ],
 
             'tanggal_estimasi_kembali' => [
-                'required',
+                'nullable',
                 'date',
                 'after_or_equal:tanggal_keluar',
             ],
 
             'waktu_estimasi_kembali' => [
-                'required',
+                'nullable',
                 'date_format:H:i',
             ],
 
@@ -106,9 +106,7 @@ class PermitController extends Controller
             'deskripsi_aktivitas_luar.required' => 'Deskripsi aktivitas wajib diisi.',
             'tanggal_keluar.required' => 'Tanggal keluar wajib diisi.',
             'waktu_keluar.required' => 'Waktu keluar wajib diisi.',
-            'tanggal_estimasi_kembali.required' => 'Tanggal estimasi kembali wajib diisi.',
             'tanggal_estimasi_kembali.after_or_equal' => 'Tanggal estimasi kembali tidak boleh sebelum tanggal keluar.',
-            'waktu_estimasi_kembali.required' => 'Waktu estimasi kembali wajib diisi.',
             'dokumen_pendukung.mimes' => 'Dokumen harus berupa PDF, JPG, JPEG, atau PNG.',
             'dokumen_pendukung.max' => 'Ukuran dokumen maksimal 2 MB.',
         ]);
@@ -249,12 +247,12 @@ class PermitController extends Controller
                 'date_format:H:i',
             ],
             'tanggal_estimasi_kembali' => [
-                'required',
+                'nullable',
                 'date',
                 'after_or_equal:tanggal_keluar',
             ],
             'waktu_estimasi_kembali' => [
-                'required',
+                'nullable',
                 'date_format:H:i',
             ],
             'dokumen_pendukung' => [
@@ -285,14 +283,8 @@ class PermitController extends Controller
             'waktu_keluar.required' =>
                 'Waktu keluar wajib diisi.',
 
-            'tanggal_estimasi_kembali.required' =>
-                'Tanggal estimasi kembali wajib diisi.',
-
             'tanggal_estimasi_kembali.after_or_equal' =>
                 'Tanggal estimasi kembali tidak boleh sebelum tanggal keluar.',
-
-            'waktu_estimasi_kembali.required' =>
-                'Waktu estimasi kembali wajib diisi.',
 
             'dokumen_pendukung.mimes' =>
                 'Dokumen harus berupa PDF, JPG, JPEG, atau PNG.',

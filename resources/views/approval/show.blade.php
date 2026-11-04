@@ -646,6 +646,41 @@
             width: 100%;
         }
     }
+
+    /* Tombol Approve saat disabled */
+    .approval-btn-approve:disabled {
+        background-color: #9ca3af !important;
+        border-color: #9ca3af !important;
+        color: #ffffff !important;
+        opacity: 1 !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    /* Tombol Approve saat aktif */
+    .approval-btn-approve:not(:disabled) {
+        background-color: #16a34a;
+        border-color: #16a34a;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* Efek hover saat aktif */
+    .approval-btn-approve:not(:disabled):hover {
+        background-color: #15803d;
+        border-color: #15803d;
+        box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+        transform: translateY(-1px);
+    }
+
+    /* Efek saat tombol ditekan */
+    .approval-btn-approve:not(:disabled):active {
+        background-color: #166534;
+        border-color: #166534;
+        transform: translateY(0);
+        box-shadow: none;
+    }
 </style>
 
 @endpush
@@ -1298,10 +1333,28 @@
                         type="button"
                         id="approveButton"
                         class="approval-btn approval-btn-approve"
+                        data-available-at="{{ $waktuKeluar->toIso8601String() }}"
+                        @disabled(!$bolehApprove)
                     >
                         <i class="fa-solid fa-check"></i>
                         Approve
                     </button>
+
+                    @if(!$bolehApprove)
+                        <div
+                            id="approvalTimeNotice"
+                            class="text-xs text-orange-700"
+                            style="max-width: 280px;"
+                        >
+                            <i class="fa-solid fa-clock mr-1"></i>
+
+                            Approval belum tersedia. Tombol akan aktif pada
+                            <strong>
+                                {{ $waktuKeluar->translatedFormat('d F Y') }}
+                                pukul {{ $waktuKeluar->format('H:i') }} WIB.
+                            </strong>
+                        </div>
+                    @endif
 
                 @endif
 
@@ -1463,6 +1516,48 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const approveButton = document.getElementById('approveButton');
     const approveForm = document.getElementById('approveForm');
+
+    if (approveButton && approveButton.dataset.availableAt) {
+        const availableAt = new Date(
+            approveButton.dataset.availableAt
+        ).getTime();
+
+        const approvalTimeNotice = document.getElementById(
+            'approvalTimeNotice'
+        );
+
+        function checkApprovalTime() {
+            const bolehApprove = Date.now() >= availableAt;
+
+            approveButton.disabled = !bolehApprove;
+
+            if (bolehApprove) {
+                approveButton.classList.remove(
+                    'opacity-75',
+                    'cursor-not-allowed'
+                );
+
+                if (approvalTimeNotice) {
+                    approvalTimeNotice.remove();
+                }
+            } else {
+                approvedButton.classList.add(
+                    'opacity-75',
+                    'cursor-not-allowed'
+                );
+            }
+
+            return bolehApprove;
+        }
+
+        checkApprovalTime();
+
+        const approvalTimer = setInterval(function () {
+            if (checkApprovalTime()) {
+                clearInterval(approvalTimer);
+            }
+        }, 1000);
+    }
 
     if (approveButton) {
 
