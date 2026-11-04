@@ -307,14 +307,20 @@
                                     @if($sedangDiLuar)
 
                                         <p class="text-sm font-bold text-gray-700 whitespace-nowrap">
-                                            {{ $permit->tanggal_estimasi_kembali->translatedFormat('d F Y') }}
+                                            {{ $permit->tanggal_estimasi_kembali
+                                                ? $permit->tanggal_estimasi_kembali->translatedFormat('d F Y')
+                                                : '' }}
                                         </p>
 
                                         <p class="inline-flex items-center gap-1 text-xs text-emerald-600 font-bold mt-1 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100 whitespace-nowrap">
 
+                                            @if($permit->waktu_estimasi_kembali)
                                             <i class="fa-regular fa-clock"></i>
+                                            @endif
 
-                                            {{ substr($permit->waktu_estimasi_kembali, 0, 5) }} WIB
+                                            {{ $permit->waktu_estimasi_kembali
+                                                ? substr($permit->waktu_estimasi_kembali, 0, 5) . ' WIB'
+                                                : '' }}
 
                                         </p>
 

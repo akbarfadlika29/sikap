@@ -959,7 +959,6 @@
                                     class="permit-label"
                                 >
                                     Tanggal Estimasi Kembali
-                                    <span class="required">*</span>
                                 </label>
 
                                 <div class="permit-input-wrapper">
@@ -972,7 +971,6 @@
                                         id="tanggal_estimasi_kembali"
                                         class="permit-input @error('tanggal_estimasi_kembali') is-invalid @enderror"
                                         value="{{ old('tanggal_estimasi_kembali') }}"
-                                        required
                                     >
 
                                 </div>
@@ -998,7 +996,6 @@
                                     class="permit-label"
                                 >
                                     Waktu Estimasi Kembali
-                                    <span class="required">*</span>
                                 </label>
 
                                 <div class="permit-input-wrapper">
@@ -1011,7 +1008,6 @@
                                         id="waktu_estimasi_kembali"
                                         class="permit-input @error('waktu_estimasi_kembali') is-invalid @enderror"
                                         value="{{ old('waktu_estimasi_kembali') }}"
-                                        required
                                     >
 
                                 </div>
